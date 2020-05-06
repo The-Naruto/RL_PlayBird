@@ -1,4 +1,4 @@
-import sys
+# import sys
 import os
 o_path = os.getcwd() # 返回当前工作目录
 # sys.path.append(o_path) # 添加自己指定的搜索路径
@@ -41,4 +41,4 @@ if __name__ == "__main__":
     env = FlappyBird()
     RL = QLearning(actions=list(range(env.n_actions)),train_mode=TrainMode)
 
-    update();
+    update()

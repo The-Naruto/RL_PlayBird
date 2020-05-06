@@ -59,8 +59,8 @@ class QLearning:
 
     # 将状态规整成一个个区间来降低状态空间 = 512/5*288/10
     def states_pre_process(self,s):
-        x = 80
-        y = 50
+        x = 20
+        y = 10
         # print(s)
         news = (round(int(s[0])/x),round(int(s[1])/y))
         ns = str(news)
