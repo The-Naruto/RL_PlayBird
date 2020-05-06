@@ -26,7 +26,7 @@
 ## Written in front
 - The game section heavily references the github project: [DeepLearningFlappyBird](https://github.com/yenchenlin/DeepLearningFlappyBird)
 - The algorithm section heavily references the github project: [Reinforcement-learning-with-tensorflow](https://github.com/MorvanZhou/Reinforcement-learning-with-tensorflow)  
------Thank you very much for the selfless dedication of the above two!
+————Thank you very much for the selfless dedication of the above two!
 
 ## Project Introduction：
 This project attempts to train some **Reinforcement Learning algorithms** to 
