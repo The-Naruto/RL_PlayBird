@@ -164,8 +164,8 @@ class FlappyBird:
             if pip['x'] > self.playerx:
                 forwardPip = pip
                 break
-        out_mid = (forwardPip['x'] + PIPE_WIDTH, forwardPip['y'] + PIPE_HEIGHT + 50)
-        states = (out_mid[0] - self.playerx, out_mid[1] - int(self.playery / 2))
+        out_mid = (forwardPip['x'] + PIPE_WIDTH, forwardPip['y'] + PIPE_HEIGHT + 75)
+        states = (out_mid[0] - self.playerx, out_mid[1] - self.playery)
         return states
 
 def getRandomPipe():
