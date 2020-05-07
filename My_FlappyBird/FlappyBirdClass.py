@@ -4,6 +4,7 @@ from My_FlappyBird import flappy_bird_utils
 import pygame.surfarray as surfarray
 from pygame.locals import *
 from itertools import cycle
+import numpy as np
 import os
 
 
@@ -38,6 +39,7 @@ class FlappyBird:
         self.basex = 0
         self.baseShift = IMAGES['base'].get_width() - BACKGROUND_WIDTH
         self.n_actions = 2
+        self.actions = [0,1]
 
         newPipe1 = getRandomPipe()
         newPipe2 = getRandomPipe()
@@ -69,12 +71,12 @@ class FlappyBird:
         reward = 0.1
         terminal = False
 
-        if sum(input_actions) != 1:
+        if input_actions not in self.actions:
             raise ValueError('Multiple input actions!')
 
-        # input_actions[0] == 1: do nothing
-        # input_actions[1] == 1: flap the bird
-        if input_actions[1] == 1:
+        # input_actions == 0: do nothing
+        # input_actions == 1: flap the bird
+        if input_actions == 1:
             if self.playery > -2 * PLAYER_HEIGHT:
                 self.playerVelY = self.playerFlapAcc
                 self.playerFlapped = True
