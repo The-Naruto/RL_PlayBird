@@ -8,7 +8,7 @@ import numpy as np
 import os
 
 
-FPS = 30
+FPS = 60
 SCREENWIDTH  = 288
 SCREENHEIGHT = 512
 
@@ -68,7 +68,7 @@ class FlappyBird:
     def frame_step(self, input_actions):
         pygame.event.pump()
 
-        reward = 0.1
+        reward = 1
         terminal = False
 
         if input_actions not in self.actions:
@@ -155,6 +155,7 @@ class FlappyBird:
 
         states = self.get_bird_pipe()
         # print(states)
+
         # print(self.playerx,self.playery)
         #print self.upperPipes[0]['y'] + PIPE_HEIGHT - int(BASEY * 0.2)
         return states, image_data, reward, terminal
@@ -165,9 +166,11 @@ class FlappyBird:
             if pip['x'] > self.playerx:
                 forwardPip = pip
                 break
-        out_mid = (forwardPip['x'] + PIPE_WIDTH, forwardPip['y'] + PIPE_HEIGHT + 22)
-        states = (out_mid[0] - self.playerx, out_mid[1] - self.playery)
+        # out_mid = (forwardPip['x'] + PIPE_WIDTH, forwardPip['y'] + PIPE_HEIGHT + 22)
+        # states = (out_mid[0] - self.playerx, out_mid[1] - self.playery)
+        states = (forwardPip['x'], forwardPip['y']-self.playery)
         return states
+
 
 def getRandomPipe():
     """returns a randomly generated pipe"""

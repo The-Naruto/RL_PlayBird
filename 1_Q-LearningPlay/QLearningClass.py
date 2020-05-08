@@ -9,7 +9,7 @@ Memory = 'mem.csv'
 Log = 'log.csv'
 
 class QLearning:
-    def __init__(self, actions, learning_rate=0.1, reward_decay=0.9, e_greedy=0.7,save_mem_round=100,train_mode=1):
+    def __init__(self, actions, learning_rate=0.1, reward_decay=0.8, e_greedy=0.7,save_mem_round=100,train_mode=1):
         self.actions = actions  # a list
         self.lr = learning_rate
         self.gamma = reward_decay
@@ -46,7 +46,6 @@ class QLearning:
         new_observation = self.check_state_exist(observation)
         # observation = self.states_pre_process(observation)
         action = ''
-        action_index = 0
         # action selection
         if np.random.uniform() < self.epsilon:
             # choose best action
@@ -97,10 +96,11 @@ class QLearning:
     def states_pre_process(self,s):
         # x = 14
         # y = 10
-        x = 1
-        y = 1
+        x = 5
+        y = 3
         # print(s)
-        news = (round(int(s[0])/x),round(int(s[1])/y))
+        news = (round(int(s[0])/x) , round(int(s[1])/y) )
+        # news = round(int(s[1])/y)
         ns = str(news)
         return ns
 
