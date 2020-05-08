@@ -11,7 +11,7 @@ TrainMode = 1   # 训练模式类别,  0:完全重新开始，1：带着上次�
 
 
 def update():
-    for episode in range(5000):
+    for episode in range(3000):
         # initial observation
         observation = env.reset()
 

@@ -131,7 +131,8 @@ class FlappyBird:
             #SOUNDS['die'].play()
             terminal = True
             self.__init__()
-            reward = -1
+            # 惩罚太小 鸟就飞不远
+            reward = -100
 
         # draw sprites
         SCREEN.blit(IMAGES['background'], (0,0))
@@ -164,7 +165,7 @@ class FlappyBird:
             if pip['x'] > self.playerx:
                 forwardPip = pip
                 break
-        out_mid = (forwardPip['x'] + PIPE_WIDTH, forwardPip['y'] + PIPE_HEIGHT + 75)
+        out_mid = (forwardPip['x'] + PIPE_WIDTH, forwardPip['y'] + PIPE_HEIGHT + 22)
         states = (out_mid[0] - self.playerx, out_mid[1] - self.playery)
         return states
 

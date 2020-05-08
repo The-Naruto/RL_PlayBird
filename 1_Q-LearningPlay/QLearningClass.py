@@ -9,7 +9,7 @@ Memory = 'mem.csv'
 Log = 'log.csv'
 
 class QLearning:
-    def __init__(self, actions, learning_rate=0.1, reward_decay=0.9, e_greedy=0.9,save_mem_round=100,train_mode=1):
+    def __init__(self, actions, learning_rate=0.1, reward_decay=0.9, e_greedy=0.7,save_mem_round=100,train_mode=1):
         self.actions = actions  # a list
         self.lr = learning_rate
         self.gamma = reward_decay
@@ -96,9 +96,9 @@ class QLearning:
     # 将状态规整成一个个区间来降低状态空间 = 512/5*288/10
     def states_pre_process(self,s):
         # x = 14
-        # y = 12
-        x = 5
-        y = 3
+        # y = 10
+        x = 1
+        y = 1
         # print(s)
         news = (round(int(s[0])/x),round(int(s[1])/y))
         ns = str(news)
