@@ -3,17 +3,22 @@ import pandas as pd
 import random
 import os
 
+'''
+
+'''
+
 os.chdir('1_Q-LearningPlay/mem_and_log/')
 
 Memory = 'mem.csv'
 Log = 'log.csv'
 
 class QLearning:
-    def __init__(self, actions, learning_rate=0.1, reward_decay=0.8, e_greedy=0.7,save_mem_round=100,train_mode=1):
+    def __init__(self, actions, learning_rate=0.6, reward_decay=0.8, e_greedy=0.1,epsilonAdd = 0.1,save_mem_round=100,train_mode=1):
         self.actions = actions  # a list
         self.lr = learning_rate
         self.gamma = reward_decay
         self.epsilon = e_greedy
+        self.epsilonAdd = epsilonAdd
         self.train_mode = train_mode
         self.save_mem_round = save_mem_round
 
@@ -81,6 +86,7 @@ class QLearning:
             self.step_loss = 0
             self.steps = 0
             if self.round_counts % self.save_mem_round == 0 and self.round_counts != 0:
+                self.epsilon = self.epsilon + self.epsilonAdd
                 self.__save_get_memorize(False)
 
 
@@ -88,16 +94,16 @@ class QLearning:
         self.step_loss += loss
         self.steps += 1
 
-        self.q_table.loc[new_s, a] += self.lr * (q_target - q_predict)  # update
+        self.q_table.loc[new_s, a] =(1 - self.lr) * self.q_table.loc[new_s, a] + self.lr * (q_target - q_predict)  # update
 
 
 
     # 将状态规整成一个个区间来降低状态空间 = 512/5*288/10
     def states_pre_process(self,s):
-        # x = 14
-        # y = 10
-        x = 5
-        y = 3
+        x = 14
+        y = 9
+        # x = 5
+        # y = 3
         # print(s)
         news = (round(int(s[0])/x) , round(int(s[1])/y) )
         # news = round(int(s[1])/y)
