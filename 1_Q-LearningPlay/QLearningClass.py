@@ -13,7 +13,7 @@ Memory = 'mem.csv'
 Log = 'log.csv'
 
 class QLearning:
-    def __init__(self, actions, learning_rate=0.6, reward_decay=0.8, e_greedy=0.1,epsilonAdd = 0.1,save_mem_round=100,train_mode=1):
+    def __init__(self, actions, learning_rate=0.01, reward_decay=0.8, e_greedy=0,epsilonAdd = 0.1,save_mem_round=100,train_mode=1):
         self.actions = actions  # a list
         self.lr = learning_rate
         self.gamma = reward_decay
@@ -30,6 +30,9 @@ class QLearning:
         self.q_table = pd.DataFrame(columns=[str(a) for a in self.actions], dtype=np.float64)
         if self.train_mode!=0:
             self.__save_get_memorize(True)
+
+        if self.train_mode == 2:
+            self.epsilon = 1
 
 
     def __save_get_memorize(self,read_flag):
@@ -87,7 +90,7 @@ class QLearning:
             self.step_loss = 0
             self.steps = 0
             if self.round_counts % self.save_mem_round == 0 and self.round_counts != 0 :
-                if self.epsilon < 0.95:
+                if self.epsilon < 0.9:
                     self.epsilon = self.epsilon + self.epsilonAdd
                 self.__save_get_memorize(False)
 
@@ -99,13 +102,11 @@ class QLearning:
 
 
 
-    # 将状态规整成一个个区间来降低状态空间 = 512/5*288/10
+    # 将多个像素合并成一个 来降低状态空间容量 = 512/5*288/10
     def states_pre_process(self,s):
-        x = 14
-        y = 9
-        # x = 5
-        # y = 3
-        # print(s)
+        x = 3
+        y = 5
+
         news = (round(int(s[0])/x) , round(int(s[1])/y) )
         # news = round(int(s[1])/y)
         ns = str(news)

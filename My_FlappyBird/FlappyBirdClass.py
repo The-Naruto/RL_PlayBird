@@ -58,9 +58,9 @@ class FlappyBird:
         self.playerVelY    =  0    # player's velocity along Y, default same as playerFlapped
         self.playerMaxVelY =  10   # max vel along Y, max descend speed
         self.playerMinVelY =  -8   # min vel along Y, max ascend speed
-        self.playerAccY    =   1   # players downward accleration
-        self.playerFlapAcc =  -9   # players speed on flapping
-        self.playerFlapped = False # True when player flaps
+        self.playerAccY    =   3   # players downward accleration
+        self.playerFlapAcc =  -6   # players speed on flapping
+
     def reset(self):
         self.__init__()
         states = self.get_bird_pipe()
@@ -77,10 +77,17 @@ class FlappyBird:
         # input_actions == 0: do nothing
         # input_actions == 1: flap the bird
         if input_actions == 1:
-            if self.playery > -2 * PLAYER_HEIGHT:
-                self.playerVelY = self.playerFlapAcc
-                self.playerFlapped = True
+            self.playerFlapped = True
+            if  self.playerVelY+self.playerFlapAcc < self.playerMinVelY:
+                self.playerVelY = self.playerMinVelY
+            else:
+                self.playerVelY += self.playerFlapAcc
                 #SOUNDS['wing'].play()
+        else:
+            if self.playerVelY+self.playerAccY > self.playerMaxVelY:
+                self.playerVelY = self.playerMaxVelY
+            else:
+                self.playerVelY += self.playerAccY
 
         # check for score
         playerMidPos = self.playerx + PLAYER_WIDTH / 2
@@ -97,11 +104,7 @@ class FlappyBird:
         self.loopIter = (self.loopIter + 1) % 30
         self.basex = -((-self.basex + 100) % self.baseShift)
 
-        # player's movement
-        if self.playerVelY < self.playerMaxVelY and not self.playerFlapped:
-            self.playerVelY += self.playerAccY
-        if self.playerFlapped:
-            self.playerFlapped = False
+
         self.playery += min(self.playerVelY, BASEY - self.playery - PLAYER_HEIGHT)
         if self.playery < 0:
             self.playery = 0
@@ -147,6 +150,8 @@ class FlappyBird:
         SCREEN.blit(IMAGES['player'][self.playerIndex],
                     (self.playerx, self.playery))
 
+        showScore(self.score)
+
         image_data = pygame.surfarray.array3d(pygame.display.get_surface())
         pygame.display.update()
         FPSCLOCK.tick(FPS)
@@ -168,7 +173,7 @@ class FlappyBird:
                 break
         # out_mid = (forwardPip['x'] + PIPE_WIDTH, forwardPip['y'] + PIPE_HEIGHT + 22)
         # states = (out_mid[0] - self.playerx, out_mid[1] - self.playery)
-        states = (forwardPip['x'], forwardPip['y']-self.playery)
+        states = (self.playerVelY, forwardPip['y']+PIPE_HEIGHT+22-self.playery)
         return states
 
 

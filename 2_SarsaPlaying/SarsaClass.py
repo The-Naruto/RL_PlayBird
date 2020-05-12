@@ -7,13 +7,13 @@ import os
 
 '''
 
-os.chdir('1_Q-LearningPlay/mem_and_log/')
+os.chdir('2_SarsaPlaying/mem_and_log/')
 
 Memory = 'mem.csv'
 Log = 'log.csv'
 
 class Sarsa:
-    def __init__(self, actions, learning_rate=0.6, reward_decay=0.8, e_greedy=0.1,epsilonAdd = 0.1,save_mem_round=100,train_mode=1):
+    def __init__(self, actions, learning_rate=0.01, reward_decay=0.8, e_greedy=0,epsilonAdd = 0.1,save_mem_round=100,train_mode=1):
         self.actions = actions  # a list
         self.lr = learning_rate
         self.gamma = reward_decay
@@ -87,7 +87,7 @@ class Sarsa:
             self.step_loss = 0
             self.steps = 0
             if self.round_counts % self.save_mem_round == 0 and self.round_counts != 0:
-                if self.epsilon < 0.95:
+                if self.epsilon < 0.9:
                     self.epsilon = self.epsilon + self.epsilonAdd
                 self.__save_get_memorize(False)
 
