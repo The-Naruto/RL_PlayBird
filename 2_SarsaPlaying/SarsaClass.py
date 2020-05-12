@@ -62,17 +62,18 @@ class Sarsa:
             action = random.randrange(len(self.actions))
         return action
 
-    def learn(self, s, a, r, s_,done):
+    def learn(self, s, a,a_,r, s_,done):
 
 
         new_s_=  self.check_state_exist(s_)
         new_s = self.check_state_exist(s)
         # print(type(self.q_table.columns[0]))
         a = str(a)
+        a_= str(a_)
         # print(type(a))
         q_predict = self.q_table.loc[new_s, a]
         if done != True:
-            q_target = r + self.gamma * self.q_table.loc[new_s_, :].max()  # next state is not terminal
+            q_target = r + self.gamma * self.q_table.loc[new_s_, a_]
         else:
             q_target = r  # next state is terminal
             self.round_counts += 1
@@ -85,8 +86,9 @@ class Sarsa:
             print('当前为第{0}回合，消耗了{1}步,平均损失为:{2}'.format(self.round_counts,self.steps,round(self.step_loss/self.steps,3)))
             self.step_loss = 0
             self.steps = 0
-            if self.round_counts % self.save_mem_round == 0 and self.round_counts != 0 and self.epsilon < 0.95:
-                self.epsilon = self.epsilon + self.epsilonAdd
+            if self.round_counts % self.save_mem_round == 0 and self.round_counts != 0:
+                if self.epsilon < 0.95:
+                    self.epsilon = self.epsilon + self.epsilonAdd
                 self.__save_get_memorize(False)
 
         loss =abs(q_target - q_predict)

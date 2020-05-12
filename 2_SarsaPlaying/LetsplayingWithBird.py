@@ -4,30 +4,32 @@
 # sys.path.append(o_path) # 添加自己指定的搜索路径
 
 from My_FlappyBird.FlappyBirdClass import FlappyBird
-from QLearningClass import QLearning
+from SarsaClass import Sarsa
 
 TrainMode = 1   # 训练模式类别,  0:完全重新开始，1：带着上次回忆开始，2: 仅执行,不训练
 
 
 
 def update():
-    for episode in range(5000):
+    for episode in range(1000):
         # initial observation
         observation = env.reset()
 
+        # RL choose action based on observation
+        action = RL.choose_action(observation)
         while True:
 
-            # RL choose action based on observation
-            action = RL.choose_action(observation)
 
             # RL take action and get next observation and reward
             observation_, _ , reward, done = env.frame_step(action)
 
+            action_ = RL.choose_action(observation)
             # RL learn from this transition
-            RL.learn(observation, action, reward, observation_,done)
+            RL.learn(observation, action,action_,reward, observation_,done)
 
             # swap observation
             observation = observation_
+            action = action_
 
             # break while loop when end of this episode
             if done:
@@ -39,6 +41,6 @@ def update():
 
 if __name__ == "__main__":
     env = FlappyBird()
-    RL = QLearning(actions=env.actions,train_mode=TrainMode)
+    RL = Sarsa(actions=env.actions,train_mode=TrainMode)
 
     update()

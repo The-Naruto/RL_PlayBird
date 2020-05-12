@@ -6,6 +6,8 @@
       <sourceFolder url="file://$MODULE_DIR$/0_FlappyBird" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/1_Q-LearningPlay" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/2_SarsaPlaying" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/21_SarsaLambdaPlaying" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
