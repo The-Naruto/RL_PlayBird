@@ -63,7 +63,8 @@ class QLearning:
         return action
 
     def learn(self, s, a, r, s_,done):
-
+        if self.train_mode==2:
+            return
 
         new_s_=  self.check_state_exist(s_)
         new_s = self.check_state_exist(s)
@@ -85,10 +86,9 @@ class QLearning:
             print('当前为第{0}回合，消耗了{1}步,平均损失为:{2}'.format(self.round_counts,self.steps,round(self.step_loss/self.steps,3)))
             self.step_loss = 0
             self.steps = 0
-            if self.round_counts % self.save_mem_round == 0 and self.round_counts != 0:
+            if self.round_counts % self.save_mem_round == 0 and self.round_counts != 0 and self.epsilon < 0.95:
                 self.epsilon = self.epsilon + self.epsilonAdd
                 self.__save_get_memorize(False)
-
 
         loss =abs(q_target - q_predict)
         self.step_loss += loss
