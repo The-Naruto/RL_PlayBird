@@ -8,6 +8,8 @@
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/2_SarsaPlaying" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/21_SarsaLambdaPlaying" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/3_Deep_Q_NetWork" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/2-1_SarsaLambdaPlaying" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
