@@ -31,15 +31,14 @@ class DQN:
             n_features,
             learning_rate=0.01,
             reward_decay=0.9,
-            e_greedy=0.9,
+            e_greedy=0.001,
             replace_target_iter=300,
             memory_size=500,
             batch_size=32,
-            e_greedy_increment=None,
+            e_greedy_increment=0.001,
             output_graph=False,
     ):
         self.n_actions = len(n_actions)
-        self.n_features = n_features
         self.lr = learning_rate
         self.gamma = reward_decay
         self.epsilon_max = e_greedy
@@ -47,7 +46,7 @@ class DQN:
         self.memory_size = memory_size
         self.batch_size = batch_size
         self.epsilon_increment = e_greedy_increment  # 不断缩小随机范围
-        self.epsilon = 0 if e_greedy_increment is not None else self.epsilon_max
+        self.epsilon = 0.1 if e_greedy_increment is not None else self.epsilon_max
 
         # total learning step
         self.learn_step_counter = 0
@@ -76,7 +75,7 @@ class DQN:
         # ------------------ build evaluate_net ------------------
         self.s = tf.placeholder("float", [None, 80, 80, 4]) # input
         self.q_target = tf.placeholder(tf.float32, [None, self.n_actions], name='Q_target')  # for calculating loss
-
+        self.a = tf.placeholder("float", [None, self.n_actions])
         # network weights
         W_conv1 = weight_variable([8, 8, 4, 32])
         b_conv1 = bias_variable([32])
@@ -112,7 +111,10 @@ class DQN:
         self.q_eval = tf.matmul(h_fc1, W_fc2) + b_fc2
 
         self.loss = tf.reduce_mean(tf.squared_difference(self.q_target, self.q_eval))
-        self._train_op = tf.train.RMSPropOptimizer(self.lr).minimize(self.loss)
+        self.readout_action = tf.reduce_sum(tf.multiply(self.q_eval, self.a), reduction_indices=1)
+        self.train_step =  tf.train.RMSPropOptimizer(self.lr).minimize(self.loss)
+
+        self.sess.run(tf.initialize_all_variables())
 
 
     def store_transition(self, s, a, r, s_, done):
@@ -135,44 +137,43 @@ class DQN:
             action = np.random.randint(0, self.n_actions)
         return action
 
-    def learn(self):
-        # check to replace target parameters
-        if self.learn_step_counter % self.replace_target_iter == 0:
-            self.sess.run(self.replace_target_op)
-            print('\ntarget_params_replaced\n')
+    def learn(self,s , a , r, s_ , done):
+        self.store_transition(s , a , r, s_ , done)
+
+        # # check to replace target parameters
+        # if self.learn_step_counter % self.replace_target_iter == 0:
+        #     self.sess.run(self.replace_target_op)
+        #     print('\ntarget_params_replaced\n')
 
         # sample batch memory from all memory
-        if self.memory_counter > self.memory_size:
-            sample_index = np.random.choice(self.memory_size, size=self.batch_size)
+        if len(self.memory) > self.memory_size:
+            batch_memory = random.sample(self.memory, self.memory_size)
         else:
-            sample_index = np.random.choice(self.memory_counter, size=self.batch_size)
-        batch_memory = self.memory[sample_index, :]
+            batch_memory = random.sample(self.memory, len(self.memory))
 
-        q_next, q_eval = self.sess.run(
-            [self.q_next, self.q_eval],
-            feed_dict={
-                self.s_: batch_memory[:, -self.n_features:],  # fixed params
-                self.s: batch_memory[:, :self.n_features],  # newest params
-            })
-
-        # change q_target w.r.t q_eval's action
-        q_target = q_eval.copy()
-
-        batch_index = np.arange(self.batch_size, dtype=np.int32)
-        eval_act_index = batch_memory[:, self.n_features].astype(int)
-        reward = batch_memory[:, self.n_features + 1]
-
-        q_target[batch_index, eval_act_index] = reward + self.gamma * np.max(q_next, axis=1)
+        s_batch = [d[0] for d in batch_memory]
+        a_batch = [d[1] for d in batch_memory]
+        r_batch = [d[2] for d in batch_memory]
+        s__batch = [d[3] for d in batch_memory]
 
 
-        # train eval network
-        _, self.cost = self.sess.run([self._train_op, self.loss],
-                                     feed_dict={self.s: batch_memory[:, :self.n_features],
-                                                self.q_target: q_target})
+
+        sr = self.q_eval.eval(feed_dict={self.s:s__batch})
+
+        y_batch = []
+        for i in range(0,len(batch_memory)):
+            if batch_memory[i][4]:
+                y_batch.append(r_batch[i])
+            else:
+                y_batch.append(r_batch[i]+self.gamma * np.max(sr[i]))
+
+        self.q_eval.run(feed_dict = {self.s: s_batch,self.q_target:y_batch,self.a:a_batch })
+
         self.cost_his.append(self.cost)
 
         # increasing epsilon
-        self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max else self.epsilon_max
+        if self.epsilon<self.epsilon_max:
+            self.epsilon = self.epsilon + (self.epsilon_max-self.epsilon)/5000
         self.learn_step_counter += 1
 
     def plot_cost(self):

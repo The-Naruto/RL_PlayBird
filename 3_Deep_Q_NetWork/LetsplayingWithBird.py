@@ -13,7 +13,7 @@ TrainMode = 1   # 训练模式类别,  0:完全重新开始，1：带着上次�
 def update():
     for episode in range(1000):
         # initial observation
-        observation = env.reset()
+        observation = env.reset_n()
 
         # RL choose action based on observation
         action = RL.choose_action(observation)
@@ -21,11 +21,12 @@ def update():
 
 
             # RL take action and get next observation and reward
-            observation_, _ , reward, done = env.frame_step(action)
+            _ , observation_, reward, done = env.frame_step(action)
 
             action_ = RL.choose_action(observation)
+
             # RL learn from this transition
-            RL.learn(observation, action,action_,reward, observation_,done)
+            RL.learn(observation, action,reward, observation_,done)
 
             # swap observation
             observation = observation_
@@ -41,6 +42,6 @@ def update():
 
 if __name__ == "__main__":
     env = FlappyBird()
-    RL = DQN(actions=env.actions,train_mode=TrainMode)
+    RL = DQN(n_actions=env.actions)
 
     update()
