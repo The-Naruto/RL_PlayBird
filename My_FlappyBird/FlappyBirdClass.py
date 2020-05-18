@@ -65,6 +65,12 @@ class FlappyBird:
         self.__init__()
         states = self.get_bird_pipe()
         return states
+
+    def reset_n(self):
+        self.__init__()
+        image_data = pygame.surfarray.array3d(pygame.display.get_surface())
+        return image_data
+
     def frame_step(self, input_actions):
         pygame.event.pump()
 
